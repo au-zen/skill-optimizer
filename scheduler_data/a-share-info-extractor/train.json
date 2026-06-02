@@ -1,0 +1,226 @@
+[
+  {
+    "task_id": "a-share-info-extractor_models_01",
+    "task_input": "Check for model files",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Check for model files"
+      },
+      {
+        "role": "assistant",
+        "content": "Skipped (not an ML skill with joblib models)"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Skipped (not an ML skill with joblib models)",
+    "score": 0.7,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_struct_01",
+    "task_input": "Does this SKILL.md have valid YAML frontmatter?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this SKILL.md have valid YAML frontmatter?"
+      },
+      {
+        "role": "assistant",
+        "content": "Frontmatter valid=True, name=a-share-info-extractor"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Frontmatter valid=True, name=a-share-info-extractor",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_struct_02",
+    "task_input": "Does frontmatter name match directory name 'a-share-info-extractor'?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does frontmatter name match directory name 'a-share-info-extractor'?"
+      },
+      {
+        "role": "assistant",
+        "content": "Expected=a-share-info-extractor, got=a-share-info-extractor, match=True"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Expected=a-share-info-extractor, got=a-share-info-extractor, match=True",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_struct_03",
+    "task_input": "Does this skill have a meaningful description?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a meaningful description?"
+      },
+      {
+        "role": "assistant",
+        "content": "Description (103 chars): Extract unified stock information from multiple sources (Tencent, akshare, DuckDB, Eastmoney HTTP AP..."
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Description (103 chars): Extract unified stock information from multiple sources (Tencent, akshare, DuckDB, Eastmoney HTTP AP...",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_struct_04",
+    "task_input": "Does this skill have a version field?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a version field?"
+      },
+      {
+        "role": "assistant",
+        "content": "Version: 3.1.0"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Version: 3.1.0",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_struct_05",
+    "task_input": "Does this skill have metadata tags?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have metadata tags?"
+      },
+      {
+        "role": "assistant",
+        "content": "Tags: ['finance', 'a-share', 'info-extractor', 'stock-fundamentals', 'eastmoney']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Tags: ['finance', 'a-share', 'info-extractor', 'stock-fundamentals', 'eastmoney']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_content_02",
+    "task_input": "Is this skill an appropriate length?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is this skill an appropriate length?"
+      },
+      {
+        "role": "assistant",
+        "content": "145 lines (3684 chars)"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "145 lines (3684 chars)",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-info-extractor_refs_01",
+    "task_input": "Does this skill have reference files?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have reference files?"
+      },
+      {
+        "role": "assistant",
+        "content": "4 reference files: ['eastmoney_enhanced.md', 'enhanced-buy-report-scoring.md', 'enhanced-buy-report.md', 'extract_stock_info.py']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "4 reference files: ['eastmoney_enhanced.md', 'enhanced-buy-report-scoring.md', 'enhanced-buy-report.md', 'extract_stock_info.py']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  }
+]

@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+scheduler_work/
+selfopt_*/
+skillopt_work/
+scheduler_state.json
+scheduler_data/*/session_trajs.json

@@ -1,0 +1,290 @@
+[
+  {
+    "task_id": "skill-optimizer_struct_01",
+    "task_input": "Does this SKILL.md have valid YAML frontmatter?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this SKILL.md have valid YAML frontmatter?"
+      },
+      {
+        "role": "assistant",
+        "content": "Frontmatter valid=True, name=skill-optimizer"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Frontmatter valid=True, name=skill-optimizer",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_struct_02",
+    "task_input": "Does frontmatter name match directory name 'skill-optimizer'?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does frontmatter name match directory name 'skill-optimizer'?"
+      },
+      {
+        "role": "assistant",
+        "content": "Expected=skill-optimizer, got=skill-optimizer, match=True"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Expected=skill-optimizer, got=skill-optimizer, match=True",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_struct_03",
+    "task_input": "Does this skill have a meaningful description?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a meaningful description?"
+      },
+      {
+        "role": "assistant",
+        "content": "Description (381 chars): Use when optimizing or auditing a SKILL.md document via SkillOpt methodology — systematic text-space..."
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Description (381 chars): Use when optimizing or auditing a SKILL.md document via SkillOpt methodology — systematic text-space...",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_struct_04",
+    "task_input": "Does this skill have a version field?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a version field?"
+      },
+      {
+        "role": "assistant",
+        "content": "Version: 2.1.0"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Version: 2.1.0",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_struct_05",
+    "task_input": "Does this skill have metadata tags?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have metadata tags?"
+      },
+      {
+        "role": "assistant",
+        "content": "Tags: ['skillopt', 'optimization', 'skill-evolution', 'training', 'text-space-optimization']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Tags: ['skillopt', 'optimization', 'skill-evolution', 'training', 'text-space-optimization']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_content_01",
+    "task_input": "Does this skill have good content coverage?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have good content coverage?"
+      },
+      {
+        "role": "assistant",
+        "content": "Content coverage: 5/5 sections found (100%), 1 shell code blocks"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Content coverage: 5/5 sections found (100%), 1 shell code blocks",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.2,
+      "source": "auto-collect-v1",
+      "section_checks": {
+        "Trigger conditions": true,
+        "Prerequisites / dependencies": true,
+        "Quick commands / main actions": true,
+        "Examples / rules": true,
+        "Pitfalls / warnings": true
+      },
+      "code_blocks": 1
+    }
+  },
+  {
+    "task_id": "skill-optimizer_content_02",
+    "task_input": "Is this skill an appropriate length?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is this skill an appropriate length?"
+      },
+      {
+        "role": "assistant",
+        "content": "117 lines (7184 chars)"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "117 lines (7184 chars)",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_script_1",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/software-development/skill-optimizer/scripts/auto_collect_trajs.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/software-development/skill-optimizer/scripts/auto_collect_trajs.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=auto_collect_trajs.py, exit=0, stdout=usage: auto_collect_trajs.py [-h] [--skill SKILL] [--dry-run] [--all]\n\nAuto-collect trajectories for skill optimization\n\noptions:\n  -h, --help     show this help message and exit\n  --skill SKILL  Skil"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=auto_collect_trajs.py, exit=0, stdout=usage: auto_collect_trajs.py [-h] [--skill SKILL] [--dry-run] [--all]\n\nAuto-collect trajectories for skill optimization\n\noptions:\n  -h, --help     show this help message and exit\n  --skill SKILL  Skil",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.07,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_compile_all",
+    "task_input": "Can all 8 scripts compile without syntax errors?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can all 8 scripts compile without syntax errors?"
+      },
+      {
+        "role": "assistant",
+        "content": "8/8 compiled OK"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "8/8 compiled OK",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 5,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "skill-optimizer_refs_01",
+    "task_input": "Does this skill have reference files?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have reference files?"
+      },
+      {
+        "role": "assistant",
+        "content": "10 reference files: ['2026-05-30-audit.md', 'env-setup.md', 'hermes-config-resolution.md', 'hermes-traj-collection.md', 'methodology.md']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "10 reference files: ['2026-05-30-audit.md', 'env-setup.md', 'hermes-config-resolution.md', 'hermes-traj-collection.md', 'methodology.md']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  }
+]

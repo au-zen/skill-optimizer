@@ -1,0 +1,66 @@
+[
+  {
+    "task_id": "akshare-unify_script_1",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/finance/akshare-unify/scripts/aggregate_weekly_monthly_final.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/finance/akshare-unify/scripts/aggregate_weekly_monthly_final.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=aggregate_weekly_monthly_final.py, exit=1, stdout="
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=aggregate_weekly_monthly_final.py, exit=1, stdout=",
+    "score": 0.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.32,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_content_01",
+    "task_input": "Does this skill have good content coverage?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have good content coverage?"
+      },
+      {
+        "role": "assistant",
+        "content": "Content coverage: 2/5 sections found (40%), 3 shell code blocks"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Content coverage: 2/5 sections found (40%), 3 shell code blocks",
+    "score": 0.4,
+    "error": null,
+    "metadata": {
+      "duration": 0.2,
+      "source": "auto-collect-v1",
+      "section_checks": {
+        "Trigger conditions": false,
+        "Prerequisites / dependencies": false,
+        "Quick commands / main actions": true,
+        "Examples / rules": false,
+        "Pitfalls / warnings": true
+      },
+      "code_blocks": 3
+    }
+  }
+]

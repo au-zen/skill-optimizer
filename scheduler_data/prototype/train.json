@@ -1,0 +1,93 @@
+[
+  {
+    "task_id": "proto_001",
+    "task_input": "Prototype a CLI calculator that supports +, -, *, / with history",
+    "messages": [
+      {"role": "user", "content": "Prototype a CLI calculator that supports +, -, *, / with history"},
+      {"role": "assistant", "content": "I'll prototype this using the LOGIC.md branch since this is a state/logic question. Let me build a tiny interactive Python app.\n\n```python\n# PROTOTYPE - throwaway calculator history explorer\n# Located: next to the app state module for context\n\ndef main():\n    history = []\n    while True:\n        expr = input('calc> ').strip()\n        if expr in ('q', 'quit'):\n            break\n        try:\n            result = eval(expr)\n            history.append((expr, result))\n            print(f'  = {result}')\n            print(f'  History: {len(history)} entries')\n        except Exception as e:\n            print(f'  Error: {e}')\n\nif __name__ == '__main__':\n    main()\n```\n\n**State surface:** On every calculation, the user sees both the result and the current history count so they can see what changed.\n\nRun with: `python calculator_prototype.py`"}
+    ],
+    "tool_calls": [],
+    "output": "A prototype CLI calculator with eval-based arithmetic and history tracking. State printed after every action.",
+    "score": 0.85,
+    "error": null,
+    "metadata": {"duration": 4.2, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_002",
+    "task_input": "Can you prototype a to-do list UI for me? I want to see what it looks like",
+    "messages": [
+      {"role": "user", "content": "Can you prototype a to-do list UI for me? I want to see what it looks like"},
+      {"role": "assistant", "content": "This is a UI question, so I'll use the UI.md branch. Let me create several visual variants.\n\n[Too verbose: wrote a React component with 3 variants, added tests for all state transitions, included Storybook stories, and added a persistence layer using localStorage. Spent 2 hours on polishing the CSS.]"}
+    ],
+    "tool_calls": [],
+    "output": "A React to-do list prototype with 3 variants, full test coverage, Storybook stories, and localStorage persistence.",
+    "score": 0.3,
+    "error": null,
+    "metadata": {"duration": 18.5, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_003",
+    "task_input": "Prototype a URL shortener's redirect logic - does it need async DB lookups or is sync fast enough?",
+    "messages": [
+      {"role": "user", "content": "Prototype a URL shortener's redirect logic - does it need async DB lookups or is sync fast enough?"},
+      {"role": "assistant", "content": "Good question — this is about performance tradeoffs, so LOGIC.md branch. Let me build a small interactive benchmark.\n\n```python\n# PROTOTYPE - url shortener redirect latency comparison\n# Answers: does sync DB lookup block too long?\n\nimport time\n\n# Simulate DB lookup\ndef sync_lookup(hash):\n    time.sleep(0.005)  # ~5ms\n    return f\"https://example.com/{hash}\"\n\ndef main():\n    for i in range(1, 6):\n        start = time.time()\n        url = sync_lookup(f\"abc{i}\")\n        elapsed = (time.time() - start) * 1000\n        print(f\"Redirect {i}: {url} ({elapsed:.1f}ms)\")\n    print(\"\\nConclusion: 5ms sync is fine for <100 req/s. Beyond that, async helps.\")\n\nif __name__ == '__main__':\n    main()\n```\n\nRun: `python3 url_redirect_proto.py`"}
+    ],
+    "tool_calls": [],
+    "output": "A sync redirect benchmark prototype showing 5ms lookup latency. Conclusion: sync is fine for <100 req/s.",
+    "score": 0.9,
+    "error": null,
+    "metadata": {"duration": 3.8, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_004",
+    "task_input": "Make a quick prototype of a user registration form",
+    "messages": [
+      {"role": "user", "content": "Make a quick prototype of a user registration form"},
+      {"role": "assistant", "content": "This is a UI question, so I'll use the UI.md branch.\n\n[Created a registration form React component with proper validation, error handling, loading states, and comprehensive tests. Also added form persistence to localStorage so users don't lose data on refresh. Added a11y attributes and responsive design.]"}
+    ],
+    "tool_calls": [],
+    "output": "A React registration form with validation, tests, persistence, and responsive design.",
+    "score": 0.25,
+    "error": null,
+    "metadata": {"duration": 22.1, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_005",
+    "task_input": "I need to sanity-check this state machine for a checkout flow. Does the 'cancelled' -> 'refunded' transition make sense?",
+    "messages": [
+      {"role": "user", "content": "I need to sanity-check this state machine for a checkout flow. Does the 'cancelled' -> 'refunded' transition make sense?"},
+      {"role": "assistant", "content": "Logic question — LOGIC.md branch. Let me build an interactive state machine explorer.\n\n```python\n# PROTOTYPE - checkout state machine sanity check\n\nSTATES = ['cart', 'checkout', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded']\nTRANSITIONS = {\n    'cart': ['checkout', 'cancelled'],\n    'checkout': ['paid', 'cancelled'],\n    'paid': ['shipped', 'cancelled'],\n    'shipped': ['delivered', 'cancelled'],\n    'delivered': ['refunded'],\n    'cancelled': ['refunded'],  # <-- the one you're asking about\n    'refunded': [],\n}\n\ncurrent = 'cart'\nwhile True:\n    print(f'\\nCurrent state: {current}')\n    next_states = TRANSITIONS.get(current, [])\n    if not next_states:\n        print('Terminal state.')\n        break\n    for i, s in enumerate(next_states, 1):\n        print(f'{i}. {s}')\n    print('q. quit')\n    choice = input('Next state: ').strip()\n    if choice == 'q':\n        break\n    try:\n        idx = int(choice) - 1\n        if 0 <= idx < len(next_states):\n            current = next_states[idx]\n        else:\n            print('Invalid choice')\n    except ValueError:\n        print('Enter a number')\n\nprint(f'\\nYour question: cancelled->refunded exists in our model. '\n      f'It allows refunds for cancelled but not-yet-shipped orders. '\n      f'This is correct for digital goods.')\n```\n\nState is printed after every transition."}
+    ],
+    "tool_calls": [],
+    "output": "Interactive checkout state machine. Confirmed cancelled->refunded is valid for digital goods.",
+    "score": 0.9,
+    "error": null,
+    "metadata": {"duration": 5.1, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_006",
+    "task_input": "I want you to prototype a complex data model for an e-commerce platform with users, products, orders, and reviews",
+    "messages": [
+      {"role": "user", "content": "I want you to prototype a complex data model for an e-commerce platform with users, products, orders, and reviews"},
+      {"role": "assistant", "content": "This is a logic/data-model question, so LOGIC.md branch. But this is very complex — I need a database. Let me set up PostgreSQL, write migrations, create data access layers, and add comprehensive error handling.\n\n[Spent 3 hours building a full e-commerce DB schema with Alembic migrations, SQLAlchemy ORM, connection pooling, and transaction management. Added tests for all CRUD operations.]"}
+    ],
+    "tool_calls": [],
+    "output": "Full e-commerce data model with PostgreSQL, SQLAlchemy, Alembic migrations, tests, and connection pooling.",
+    "score": 0.2,
+    "error": null,
+    "metadata": {"duration": 45.0, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_007",
+    "task_input": "Prototype a notification priority queue - should urgent notifications skip the line?",
+    "messages": [
+      {"role": "user", "content": "Prototype a notification priority queue - should urgent notifications skip the line?"},
+      {"role": "assistant", "content": "Logic question — LOGIC.md.\n\n```python\n# PROTOTYPE - priority queue behaviour explorer\nimport heapq\n\nclass NotificationQueue:\n    def __init__(self):\n        self._queue = []\n    \n    def add(self, msg, priority=0):\n        heapq.heappush(self._queue, (-priority, msg))\n    \n    def process_next(self):\n        if not self._queue:\n            return None\n        return heapq.heappop(self._queue)[1]\n    \n    def __len__(self):\n        return len(self._queue)\n\ndef main():\n    q = NotificationQueue()\n    q.add('Server update available', priority=1)\n    q.add('New comment on your post', priority=0)\n    q.add('URGENT: Payment failed', priority=5)\n    q.add('Weekly digest ready', priority=-1)\n    \n    print('Queue state (processing order):')\n    while len(q) > 0:\n        notification = q.process_next()\n        print(f'  -> {notification}')\n\nif __name__ == '__main__':\n    main()\n```\n\nState is printed after every dequeue. Conclusion: priority queue works, urgent notifications naturally skip ahead."}
+    ],
+    "tool_calls": [],
+    "output": "Priority queue prototype showing urgent notifications skip ahead. Python heapq-based.",
+    "score": 0.9,
+    "error": null,
+    "metadata": {"duration": 4.5, "model": "opencode"}
+  }
+]

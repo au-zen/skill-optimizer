@@ -1,0 +1,42 @@
+{
+  "interval_hours": 24,
+  "default_epochs": 1,
+  "default_steps": 2,
+  "default_budget_init": 3,
+  "default_budget_final": 1,
+  "skills": [
+    {
+      "name": "a-share-alpha-v9",
+      "skill_path": "/home/autum/.hermes/skills/a-share-alpha-v9/SKILL.md",
+      "train_trajs": "scheduler_data/a-share-alpha-v9/train.json",
+      "sel_trajs": null,
+      "interval_hours": 48,
+      "epochs": 1,
+      "steps": 2,
+      "budget_init": 3,
+      "budget_final": 1
+    },
+    {
+      "name": "a-share-info-extractor",
+      "skill_path": "/home/autum/.hermes/skills/a-share-info-extractor/SKILL.md",
+      "train_trajs": "scheduler_data/a-share-info-extractor/train.json",
+      "sel_trajs": null,
+      "interval_hours": 48,
+      "epochs": 1,
+      "steps": 2,
+      "budget_init": 3,
+      "budget_final": 1
+    },
+    {
+      "name": "akshare-unify",
+      "skill_path": "/home/autum/.hermes/skills/finance/akshare-unify/SKILL.md",
+      "train_trajs": "scheduler_data/akshare-unify/train.json",
+      "sel_trajs": null,
+      "interval_hours": 48,
+      "epochs": 1,
+      "steps": 2,
+      "budget_init": 3,
+      "budget_final": 1
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "task_id": "proto_008",
+    "task_input": "Prototype a weather dashboard UI mockup",
+    "messages": [
+      {"role": "user", "content": "Prototype a weather dashboard UI mockup"},
+      {"role": "assistant", "content": "UI question — UI.md branch. Let me generate several design variants.\n\n[Created 3 Weather dashboard UI variants — minimal, data-rich, and playful — each toggleable via a search param. Implemented them as an interactive HTML playground with mock data. No tests, no persistence, no build step. One command to open.]"}
+    ],
+    "tool_calls": [],
+    "output": "3 variants of weather dashboard UI, toggleable via param. HTML-only, no tests or persistence.",
+    "score": 0.8,
+    "error": null,
+    "metadata": {"duration": 6.2, "model": "opencode"}
+  },
+  {
+    "task_id": "proto_009",
+    "task_input": "Prototype an API rate limiter algorithm - token bucket vs sliding window?",
+    "messages": [
+      {"role": "user", "content": "Prototype an API rate limiter algorithm - token bucket vs sliding window?"},
+      {"role": "assistant", "content": "Logic question — LOGIC.md.\n\n[Very long and detailed: Explained all 4 rate limiting algorithms in depth (token bucket, leaky bucket, fixed window, sliding window), wrote production-quality implementations of each with type annotations and docstrings, added unit tests for edge cases like concurrent access, and spent a long time benchmarking them with timeit.]"}
+    ],
+    "tool_calls": [],
+    "output": "4 rate limiter algorithms with full implementations, tests, benchmarks, and detailed explanation.",
+    "score": 0.45,
+    "error": null,
+    "metadata": {"duration": 14.7, "model": "opencode"}
+  }
+]

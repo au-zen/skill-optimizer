@@ -1,0 +1,310 @@
+[
+  {
+    "task_id": "akshare-unify_models_01",
+    "task_input": "Check for model files",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Check for model files"
+      },
+      {
+        "role": "assistant",
+        "content": "Skipped (not an ML skill with joblib models)"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Skipped (not an ML skill with joblib models)",
+    "score": 0.7,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_struct_01",
+    "task_input": "Does this SKILL.md have valid YAML frontmatter?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this SKILL.md have valid YAML frontmatter?"
+      },
+      {
+        "role": "assistant",
+        "content": "Frontmatter valid=True, name=akshare-unify"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Frontmatter valid=True, name=akshare-unify",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_struct_02",
+    "task_input": "Does frontmatter name match directory name 'akshare-unify'?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does frontmatter name match directory name 'akshare-unify'?"
+      },
+      {
+        "role": "assistant",
+        "content": "Expected=akshare-unify, got=akshare-unify, match=True"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Expected=akshare-unify, got=akshare-unify, match=True",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_struct_03",
+    "task_input": "Does this skill have a meaningful description?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a meaningful description?"
+      },
+      {
+        "role": "assistant",
+        "content": "Description (65 chars): 统一同步 A 股数据到 DuckDB — predictions 标的池驱动，Tencent 并行 + Sina fallback..."
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Description (65 chars): 统一同步 A 股数据到 DuckDB — predictions 标的池驱动，Tencent 并行 + Sina fallback...",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_struct_04",
+    "task_input": "Does this skill have a version field?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a version field?"
+      },
+      {
+        "role": "assistant",
+        "content": "Version: 3.0"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Version: 3.0",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_struct_05",
+    "task_input": "Does this skill have metadata tags?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have metadata tags?"
+      },
+      {
+        "role": "assistant",
+        "content": "Tags: ['finance', 'a-share', 'duckdb', 'sync']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Tags: ['finance', 'a-share', 'duckdb', 'sync']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_content_02",
+    "task_input": "Is this skill an appropriate length?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is this skill an appropriate length?"
+      },
+      {
+        "role": "assistant",
+        "content": "129 lines (4157 chars)"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "129 lines (4157 chars)",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_script_2",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/finance/akshare-unify/scripts/check_sync.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/finance/akshare-unify/scripts/check_sync.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=check_sync.py, exit=0, stdout=usage: check_sync.py [-h] [--db DB] [--today TODAY]\n\nCheck DuckDB sync status\n\noptions:\n  -h, --help     show this help message and exit\n  --db DB        DuckDB path\n  --today TODAY  Date to check aga"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=check_sync.py, exit=0, stdout=usage: check_sync.py [-h] [--db DB] [--today TODAY]\n\nCheck DuckDB sync status\n\noptions:\n  -h, --help     show this help message and exit\n  --db DB        DuckDB path\n  --today TODAY  Date to check aga",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_script_3",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/finance/akshare-unify/scripts/sync_5min.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/finance/akshare-unify/scripts/sync_5min.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=sync_5min.py, exit=0, stdout=usage: sync_5min.py [-h] [--full] [--all] [--pool] [--top TOP] [--codes CODES]\n                    [--keep KEEP] [--workers WORKERS] [--db DB]\n\n同步 stock_klines_5min（Sina 直连，串行）\n\noptions:\n  -h, --help "
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=sync_5min.py, exit=0, stdout=usage: sync_5min.py [-h] [--full] [--all] [--pool] [--top TOP] [--codes CODES]\n                    [--keep KEEP] [--workers WORKERS] [--db DB]\n\n同步 stock_klines_5min（Sina 直连，串行）\n\noptions:\n  -h, --help ",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.15,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_compile_all",
+    "task_input": "Can all 15 scripts compile without syntax errors?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can all 15 scripts compile without syntax errors?"
+      },
+      {
+        "role": "assistant",
+        "content": "15/15 compiled OK"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "15/15 compiled OK",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 5,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "akshare-unify_refs_01",
+    "task_input": "Does this skill have reference files?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have reference files?"
+      },
+      {
+        "role": "assistant",
+        "content": "30 reference files: ['aggregate_weekly_monthly.py', 'aggregate_weekly_monthly_v2.py', 'aggregate_weekly_monthly_v3.py', 'batch-cyclic-sync-pattern.md', 'buy-signal-evaluator.md']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "30 reference files: ['aggregate_weekly_monthly.py', 'aggregate_weekly_monthly_v2.py', 'aggregate_weekly_monthly_v3.py', 'batch-cyclic-sync-pattern.md', 'buy-signal-evaluator.md']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  }
+]

@@ -1,0 +1,310 @@
+[
+  {
+    "task_id": "a-share-alpha-v9_struct_02",
+    "task_input": "Does frontmatter name match directory name 'a-share-alpha-v9'?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does frontmatter name match directory name 'a-share-alpha-v9'?"
+      },
+      {
+        "role": "assistant",
+        "content": "Expected=a-share-alpha-v9, got=a-share-alpha-v9, match=True"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Expected=a-share-alpha-v9, got=a-share-alpha-v9, match=True",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_struct_03",
+    "task_input": "Does this skill have a meaningful description?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a meaningful description?"
+      },
+      {
+        "role": "assistant",
+        "content": "Description (94 chars): A股 Alpha 选股 v10.10 — 动量迁移：42-dim 全市场排名标签 + 单调约束 + 风格门控，LightGBM ×4 统一特征（42-dim）+ 日内 8-dim 独立模型..."
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Description (94 chars): A股 Alpha 选股 v10.10 — 动量迁移：42-dim 全市场排名标签 + 单调约束 + 风格门控，LightGBM ×4 统一特征（42-dim）+ 日内 8-dim 独立模型...",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_struct_04",
+    "task_input": "Does this skill have a version field?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have a version field?"
+      },
+      {
+        "role": "assistant",
+        "content": "Version: 10.1"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Version: 10.1",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_struct_05",
+    "task_input": "Does this skill have metadata tags?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have metadata tags?"
+      },
+      {
+        "role": "assistant",
+        "content": "Tags: ['finance', 'stocks', 'a-share', 'prediction', 'ml', 'lightgbm', 'momentum']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Tags: ['finance', 'stocks', 'a-share', 'prediction', 'ml', 'lightgbm', 'momentum']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_content_02",
+    "task_input": "Is this skill an appropriate length?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is this skill an appropriate length?"
+      },
+      {
+        "role": "assistant",
+        "content": "392 lines (13049 chars)"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "392 lines (13049 chars)",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_script_1",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/a-share-alpha-v9/scripts/backtest.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/a-share-alpha-v9/scripts/backtest.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=backtest.py, exit=0, stdout=usage: backtest.py [-h] [--data DATA] [--model MODEL] [--top TOP]\n                   [--walkforward] [--analyze-only]\n                   [--min-train-dates MIN_TRAIN_DATES] [--step STEP]\n             "
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=backtest.py, exit=0, stdout=usage: backtest.py [-h] [--data DATA] [--model MODEL] [--top TOP]\n                   [--walkforward] [--analyze-only]\n                   [--min-train-dates MIN_TRAIN_DATES] [--step STEP]\n             ",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.12,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_script_2",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/a-share-alpha-v9/scripts/backtest_portfolio.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/a-share-alpha-v9/scripts/backtest_portfolio.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=backtest_portfolio.py, exit=0, stdout=usage: backtest_portfolio.py [-h] [--data DATA] [--top TOP] [--walkforward]\n                             [--cost COST]\n\nPortfolio-level backtest with costs\n\noptions:\n  -h, --help     show this help me"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=backtest_portfolio.py, exit=0, stdout=usage: backtest_portfolio.py [-h] [--data DATA] [--top TOP] [--walkforward]\n                             [--cost COST]\n\nPortfolio-level backtest with costs\n\noptions:\n  -h, --help     show this help me",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.12,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_script_3",
+    "task_input": "Does `uv run python /home/autum/.hermes/skills/a-share-alpha-v9/scripts/build_calibrator.py --help` work?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does `uv run python /home/autum/.hermes/skills/a-share-alpha-v9/scripts/build_calibrator.py --help` work?"
+      },
+      {
+        "role": "assistant",
+        "content": "Script=build_calibrator.py, exit=0, stdout=usage: build_calibrator.py [-h] [--data DATA] [--model MODEL]\n                           [--output OUTPUT]\n\n保序回归校准构建器\n\noptions:\n  -h, --help       show this help message and exit\n  --data DATA      训练"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Script=build_calibrator.py, exit=0, stdout=usage: build_calibrator.py [-h] [--data DATA] [--model MODEL]\n                           [--output OUTPUT]\n\n保序回归校准构建器\n\noptions:\n  -h, --help       show this help message and exit\n  --data DATA      训练",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.83,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_compile_all",
+    "task_input": "Can all 39 scripts compile without syntax errors?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can all 39 scripts compile without syntax errors?"
+      },
+      {
+        "role": "assistant",
+        "content": "39/39 compiled OK"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "39/39 compiled OK",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 5,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_refs_01",
+    "task_input": "Does this skill have reference files?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does this skill have reference files?"
+      },
+      {
+        "role": "assistant",
+        "content": "58 reference files: ['5min-features-architecture.md', 'a-enhanced-v3.1-plan.md', 'backtest-cross-section-ranking.md', 'backtest-metrics.md', 'buy-signal-evaluator-pitfalls.md']"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "58 reference files: ['5min-features-architecture.md', 'a-enhanced-v3.1-plan.md', 'backtest-cross-section-ranking.md', 'backtest-metrics.md', 'buy-signal-evaluator-pitfalls.md']",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.1,
+      "source": "auto-collect-v1"
+    }
+  },
+  {
+    "task_id": "a-share-alpha-v9_models_01",
+    "task_input": "Do all 4 expected model files exist?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do all 4 expected model files exist?"
+      },
+      {
+        "role": "assistant",
+        "content": "Found {'model_5d.joblib', 'sector_models_v2.joblib', 'sector_models.joblib', 'model_20d.joblib', 'model_10d.joblib', 'model_5min.joblib', 'model_1d.joblib'} | Missing: []"
+      }
+    ],
+    "tool_calls": [
+      {
+        "tool": "terminal",
+        "params": {},
+        "result_present": true
+      }
+    ],
+    "output": "Found {'model_5d.joblib', 'sector_models_v2.joblib', 'sector_models.joblib', 'model_20d.joblib', 'model_10d.joblib', 'model_5min.joblib', 'model_1d.joblib'} | Missing: []",
+    "score": 1.0,
+    "error": null,
+    "metadata": {
+      "duration": 0.5,
+      "source": "auto-collect-v1"
+    }
+  }
+]

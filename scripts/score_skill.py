@@ -303,6 +303,8 @@ def main():
         Path(args.output).write_text(
             json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8"
         )
+    elif not args.verbose:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
 
     if args.stability:
         sys.exit(0 if result.get("stable") else 1)

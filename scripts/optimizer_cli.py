@@ -58,6 +58,30 @@ def _trajectory_paths(paths: list[str]) -> list[str]:
     return [str(Path(p).resolve()) for p in paths]
 
 
+def _install_cached_rollout(engine: SkillOptEngine, trajectories: list[Trajectory]) -> None:
+    """Route task IDs to already-loaded trajectories for manual-mode commands."""
+    cached_task_map = {t.task_id: t for t in trajectories}
+    original_rollout = engine._rollout
+
+    def _cached_rollout(self_eng, skill_path, tasks):
+        if tasks:
+            cached_trajs = [cached_task_map[t] for t in tasks if t in cached_task_map]
+            if len(cached_trajs) == len(tasks):
+                return cached_trajs
+        return original_rollout(skill_path, tasks)
+
+    import types
+
+    engine._rollout = types.MethodType(_cached_rollout, engine)
+
+
+class _NoopLLMClient:
+    """Placeholder for commands that only exercise rollout/validation logic."""
+
+    def chat_structured(self, *args, **kwargs):
+        raise RuntimeError("This command does not perform optimizer LLM calls")
+
+
 # ── Commands ─────────────────────────────────────────────────────────
 
 
@@ -79,17 +103,6 @@ def cmd_optimize(args: argparse.Namespace):
         use_secondary_scorer=args.secondary_scorer,
     )
 
-    if args.hermes_default:
-        llm = OptimizerLLMClient.from_hermes_config(calls_per_minute=args.rpm)
-        config.optimizer_model = llm.model
-        config.optimizer_api_base = llm.api_base
-    else:
-        llm = OptimizerLLMClient(
-            model=args.optimizer_model,
-            api_base=args.optimizer_api_base,
-            calls_per_minute=args.rpm,
-        )
-
     # Determine split sources
     train_split = args.train or []
     sel_split = args.sel or []
@@ -110,11 +123,28 @@ def cmd_optimize(args: argparse.Namespace):
 
     # Stage 3: holdout split
     holdout_split = []
+    holdout_trajs = []
     if args.holdout_trajs:
         holdout_trajs = _load_trajectories(args.holdout_trajs)
         holdout_split = [t.task_id for t in holdout_trajs]
         config.holdout_rollout = True
         print(f"  Loaded {len(holdout_trajs)} holdout trajectories from {args.holdout_trajs}")
+
+    if not sel_split:
+        raise ValueError(
+            "A validation split is required for optimization. Provide --sel or --sel-trajs."
+        )
+
+    if args.hermes_default:
+        llm = OptimizerLLMClient.from_hermes_config(calls_per_minute=args.rpm)
+        config.optimizer_model = llm.model
+        config.optimizer_api_base = llm.api_base
+    else:
+        llm = OptimizerLLMClient(
+            model=args.optimizer_model,
+            api_base=args.optimizer_api_base,
+            calls_per_minute=args.rpm,
+        )
 
     # Determine rollout mode
     rollout_mode = getattr(args, "rollout_mode", "manual")
@@ -145,24 +175,7 @@ def cmd_optimize(args: argparse.Namespace):
         # Inject pre-loaded trajectories into the harness for rollout
         cached_all = train_trajs + (sel_trajs or []) + (holdout_trajs if holdout_split else [])
         engine.harness._cached_train = cached_all
-        engine._cached_task_map = {t.task_id: t for t in cached_all}
-        original_rollout = engine._rollout
-
-        def _cached_rollout(self_eng, skill_path, tasks):
-            """Use cached trajectories — works for both train and sel."""
-            if hasattr(self_eng.harness, "_cached_train") and tasks:
-                # Filter to tasks we have cached
-                cached_trajs = [
-                    self_eng._cached_task_map[t]
-                    for t in tasks
-                    if t in self_eng._cached_task_map
-                ]
-                if len(cached_trajs) == len(tasks):
-                    return cached_trajs
-            return original_rollout(skill_path, tasks)
-
-        import types
-        engine._rollout = types.MethodType(_cached_rollout, engine)
+        _install_cached_rollout(engine, cached_all)
     else:
         # Script mode: run commands per task
         harness = RolloutHarness(mode="script", scorer=JsonScorer())
@@ -200,7 +213,7 @@ def cmd_optimize(args: argparse.Namespace):
 def cmd_rollout(args: argparse.Namespace):
     """Single rollout batch — collect trajectories."""
     harness = RolloutHarness(mode=args.mode, scorer=JsonScorer())
-    tasks = _trajectory_paths(args.tasks)
+    tasks = _trajectory_paths(args.tasks) if args.mode == "manual" else args.tasks
     trajectories = harness.execute(args.skill, tasks, batch_size=args.batch_size)
 
     out_path = args.output or "trajectories.json"
@@ -233,17 +246,25 @@ def cmd_validate(args: argparse.Namespace):
     from .engine import SkillOptEngine
 
     config = OptimizerConfig()
-    llm = OptimizerLLMClient()
     harness = RolloutHarness(mode=args.mode, scorer=JsonScorer())
     sel_trajs = _load_trajectories(args.sel_trajs) if args.sel_trajs else []
 
     engine = SkillOptEngine(
         target_skill_path=args.skill,
         config=config,
-        llm_client=llm,
+        llm_client=_NoopLLMClient(),
         rollout_harness=harness,
         sel_split=[t.task_id for t in sel_trajs] if sel_trajs else [],
     )
+    if sel_trajs:
+        _install_cached_rollout(engine, sel_trajs)
+
+    engine.state.current_skill_path = str(Path(args.skill).resolve())
+    engine.state.origin_skill_path = engine.state.current_skill_path
+    baseline_trajs = engine._rollout(engine.state.current_skill_path, engine.splits["sel"])
+    if baseline_trajs:
+        engine.state.current_score = sum(t.score for t in baseline_trajs) / len(baseline_trajs)
+        engine.state.best_score = engine.state.current_score
 
     candidate_path = str(Path(args.candidate).resolve())
     accepted = engine._validate_and_gate(candidate_path)

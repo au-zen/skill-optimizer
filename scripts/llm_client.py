@@ -21,7 +21,10 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-import httpx
+try:
+    import httpx
+except ImportError:  # pragma: no cover - exercised in minimal CLI environments
+    httpx = None
 
 # ── Auto-load .env from skill root (override mode — no python-dotenv) ─
 # NOTE: this is the ONLY config source.  The .env file must contain
@@ -276,6 +279,11 @@ class OptimizerLLMClient:
 
         self._providers = _providers  # may be None in single-provider mode
         self._rate_limiter = _SimpleRateLimiter(calls_per_minute)
+        if httpx is None:
+            raise RuntimeError(
+                "The 'httpx' package is required for optimizer LLM calls. "
+                "Install dependencies before running optimize or reflect."
+            )
         self._client = httpx.Client(timeout=120)
 
         if self.api_key is None or self.api_key == "***":

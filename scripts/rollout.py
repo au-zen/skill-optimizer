@@ -67,7 +67,7 @@ class JsonScorer(Scorer):
             return 0.0
         try:
             data = json.loads(output)
-            return float(data.get("score", 0.0))
+            return float(data.get("score", data.get("overall_score", 0.0)))
         except (json.JSONDecodeError, TypeError, ValueError):
             return 0.0
 

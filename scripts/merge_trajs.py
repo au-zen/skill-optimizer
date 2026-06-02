@@ -21,6 +21,7 @@ import argparse
 import json
 import random
 import sys
+import uuid
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
@@ -69,7 +70,7 @@ def _dedup(trajs: list[dict]) -> list[dict]:
         tid = t.get("task_id", "")
         if not tid:
             # No task_id — keep as-is with a synthetic ID
-            t["task_id"] = f"anon_{id(t)}"
+            t["task_id"] = f"anon_{uuid.uuid4().hex[:8]}"
             best[t["task_id"]] = t
             continue
         existing = best.get(tid)

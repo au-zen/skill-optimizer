@@ -74,6 +74,7 @@ Reference files:
 - Merge trajectory pools: `scripts/merge_trajs.py --skill <name>`
 - Autonomous scheduling: `skill_view("skill-optimizer", "references/scheduler-add-skill.md")`
 - Engine invariants: `skill_view("skill-optimizer", "references/runtime-contract.md")`
+- Engine code audit (2026-06-02): `skill_view("skill-optimizer", "references/audit-2026-06-02.md")`
 
 ## Optimization Policy
 
@@ -97,11 +98,23 @@ This is the **only section the automated optimizer is permitted to edit**
 
 4. **opencode-zen token exhaustion.** `deepseek-v4-flash-free` is a reasoning model. With `max_tokens < 200`, the content field may be empty (all tokens consumed by reasoning). Set `max_tokens ≥ 200`.
 
-5. **`best_skill_path` landing in the wrong directory.** `work_dir` must be created before `best_skill_path` is set in `OptimizationState.__init__`. If initialized in the wrong order, `best_skill.md` writes to the original skill directory instead of `work_dir/`.
+5. **`best_skill_path` landing in the wrong directory.** `best_skill_path` depends on `self.work_dir` being resolved and created **before** `OptimizationState` is instantiated. The current engine code already upholds this order (work_dir created at line 142-143, best_skill_path set at line 148). Any refactoring must preserve this: `Path(config.work_dir).resolve().mkdir(parents=True, exist_ok=True)` → then pass `str(work_dir / "best_skill.md")` as the path. Reversing the order writes the file to the original skill directory instead of `work_dir/`.
 
 6. **Self-optimization scope confusion.** `auto_collect_trajs.py` generates structural-check trajectories only. It measures document compliance, not functional agent improvement. See Overview for the precise scope boundary.
 
 7. **Rules-layer pollution from implementation details.** Only `## Optimization Policy` is editable. Writing engine internals (API fallback chains, path handling, buffer sizes) into this section exposes system constraints to the optimizer, risking silent breakage if they get "optimized away".
+
+8. **`id()` reuse in `merge_trajs.py` deduplication.** `merge_trajs.py` uses `id(t)` as a synthetic task ID for anonymous trajectories (those without a `task_id` field). Python's `id()` is unique only for the lifetime of the object — if the dict holding the reference is GC'd and a new trajectory object gets the same id, dedup silently collapses them. Replace with `uuid.uuid4().hex[:8]` or a monotonic counter.
+
+9. **Redundant function-level import shadowing module-level import.** A function scoped `import re` when `re` is already imported at the top of the module compiles fine, works, but wastes the function's first import hit, confuses readers, and accrete silently as code is added. During an audit, grep for `import` and `from ... import` lines indented at function level, then check whether the symbol is already imported at module scope. Remove the function-level import; the module-level import is always available.
+
+10. **Dead imports at function scope.** Importing a symbol inside a function and never using it (e.g. `from .protocols import OptimizationState` inside `_detect_drift` where `OptimizationState` is never referenced) is dead code that lints pass silently because the import itself is a valid statement. During audit, check every function-scoped import for at least one use of the imported symbol in the function body.
+
+11. **`__all__` leaking private symbols.** Underscore-prefixed names (e.g. `_compute_text_similarity`, `_find_section`) in `__all__` violate the Python convention that `_` means "internal, not part of the public API". While the symbols are still importable via explicit `from .module import _name`, putting them in `__all__` advertises them as public. Audit: check `__all__` lists for any entry starting with `_`.
+
+12. **Silent `None` from `try/except ImportError`.** Wrapping `from .module import name` in a `try/except ImportError: name = None` block silently converts a missing dependency into `None`. If the downstream code later calls `name(...)`, the error is `TypeError: 'NoneType' object is not callable` — opaque and disconnected from the root cause (missing dependency). Only use this pattern when the module truly is optional AND every call site guards with `if name is not None:`. Otherwise, let the ImportError propagate naturally.
+
+13. **Audit order heuristic.** When auditing implementation code (scripts/), read files in dependency order: protocols (types) → engine (core logic) → CLI entry (exits) → merge/collect utilities (leaf scripts). This catches bugs in the data model before chasing symptoms in leaf code. Read `__init__.py` last — it is a pure re-export layer whose issues (wrong names, try/except wrapping) only make sense after you know what the underlying modules export.
 
 ## Verification Checklist
 

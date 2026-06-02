@@ -642,7 +642,6 @@ class SkillOptEngine:
             issues.append(f"Unclosed fenced code block ({fence_count} backtick fences)")
 
         # 3. At least one section heading
-        import re
         headings = re.findall(r"^#{1,3}\s+\S", content, re.MULTILINE)
         if not headings:
             issues.append("No markdown section headings found")
@@ -809,7 +808,6 @@ class SkillOptEngine:
 
     def _detect_drift(self, candidate_path: str) -> bool:
         """Check candidate similarity against origin_skill. Returns True if safe."""
-        from .protocols import OptimizationState
 
         origin_path = self.state.origin_skill_path
         if not origin_path or not Path(origin_path).exists():

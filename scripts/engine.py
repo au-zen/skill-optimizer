@@ -177,17 +177,23 @@ class SkillOptEngine:
         self.state.origin_skill_path = resolved
         self.state.origin_skill_hash = self.state.compute_skill_hash(resolved)
 
+        if not self.splits["sel"]:
+            raise ValueError(
+                "A validation split is required for optimization. Provide --sel or "
+                "--sel-trajs so candidates can be gated on D_sel."
+            )
+
+        shutil.copy2(resolved, self.state.best_skill_path)
+        self.state.best_skill_path = str(Path(self.state.best_skill_path).resolve())
+
         # Stage 1: real baseline initialization
-        if self.splits["sel"]:
-            baseline_trajs = self._rollout(resolved, self.splits["sel"])
-            if baseline_trajs:
-                self.state.current_score = sum(t.score for t in baseline_trajs) / len(baseline_trajs)
-                self.state.best_score = self.state.current_score
-                print(f"[SkillOpt] Baseline score (D_sel): {self.state.current_score:.4f}")
-            else:
-                print("[SkillOpt] [WARN] No trajectories from baseline rollout; score stays at 0.0")
+        baseline_trajs = self._rollout(resolved, self.splits["sel"])
+        if baseline_trajs:
+            self.state.current_score = sum(t.score for t in baseline_trajs) / len(baseline_trajs)
+            self.state.best_score = self.state.current_score
+            print(f"[SkillOpt] Baseline score (D_sel): {self.state.current_score:.4f}")
         else:
-            print("[SkillOpt] [WARN] No sel split configured — baseline score defaulting to 0.0")
+            print("[SkillOpt] [WARN] No trajectories from baseline rollout; score stays at 0.0")
 
         print(f"[SkillOpt] Starting optimisation of {resolved}")
         print(f"[SkillOpt] Train: {len(self.splits['train'])} tasks  "
@@ -761,6 +767,8 @@ class SkillOptEngine:
         candidate_score = sum(t.score for t in candidate_trajs) / len(candidate_trajs)
         current_score = self.state.current_score
 
+        secondary_score: float | None = None
+
         # Stage 3: secondary scorer cross-validation
         if self.config.use_secondary_scorer and self._secondary_scorer is not None:
             try:
@@ -769,8 +777,6 @@ class SkillOptEngine:
                 if secondary_score < candidate_score * 0.5:
                     print(f"      [WARN] Secondary score ({secondary_score:.4f}) diverges "
                           f"from primary ({candidate_score:.4f}) — possible reward hacking")
-                    # Still accept but log the divergence
-                    self._metrics[-1]["secondary_score"] = secondary_score if self._metrics else None
             except Exception as e:
                 print(f"      [WARN] Secondary scorer failed: {e}")
 
@@ -782,14 +788,17 @@ class SkillOptEngine:
                 self.state.holdout_score = holdout_score
                 print(f"      Holdout: {holdout_score:.4f}")
 
-        self._metrics.append({
+        metric = {
             "epoch": self.state.epoch,
             "step": self.state.step,
             "current_score": current_score,
             "candidate_score": candidate_score,
             "delta": candidate_score - current_score,
             "n_sel": len(candidate_trajs),
-        })
+        }
+        if secondary_score is not None:
+            metric["secondary_score"] = secondary_score
+        self._metrics.append(metric)
 
         if self.config.accept_strict:
             accepted = candidate_score > current_score

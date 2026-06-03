@@ -43,6 +43,7 @@ from .protocols import OptimizerConfig, OptimizationState, Trajectory
 from .engine import SkillOptEngine
 from .llm_client import OptimizerLLMClient
 from .rollout import RolloutHarness, JsonScorer
+from .reward_extractor import RewardConfig, convert_hermes_jsonl, load_hermes_jsonl, parse_weights
 
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -51,6 +52,14 @@ from .rollout import RolloutHarness, JsonScorer
 def _load_trajectories(path: str) -> list[Trajectory]:
     """Load pre-collected trajectories from a JSON file."""
     return RolloutHarness.load_trajectories(path)
+
+
+def _load_hermes_trajectories(paths: list[str] | None, weights: str | None = None) -> list[Trajectory]:
+    """Load Hermes Runtime JSONL/JSON and extract SkillOpt rewards."""
+    if not paths:
+        return []
+    config = RewardConfig(weights=parse_weights(weights))
+    return load_hermes_jsonl(paths, config=config)
 
 
 def _trajectory_paths(paths: list[str]) -> list[str]:
@@ -101,6 +110,9 @@ def cmd_optimize(args: argparse.Namespace):
         work_dir=args.work_dir,
         min_similarity=args.min_similarity,
         use_secondary_scorer=args.secondary_scorer,
+        min_reward_delta=args.min_reward_delta,
+        completed_rate_tolerance=args.completed_rate_tolerance,
+        tool_failure_rate_tolerance=args.tool_failure_rate_tolerance,
     )
 
     # Determine split sources
@@ -120,6 +132,16 @@ def cmd_optimize(args: argparse.Namespace):
         print(f"  Loaded {len(sel_trajs)} sel trajectories from {args.sel_trajs}")
     else:
         sel_trajs = None
+
+    if args.train_hermes_jsonl:
+        train_trajs = _load_hermes_trajectories(args.train_hermes_jsonl, args.reward_weights)
+        train_split = [t.task_id for t in train_trajs]
+        print(f"  Extracted {len(train_trajs)} train rewards from Hermes trajectories")
+
+    if args.sel_hermes_jsonl:
+        sel_trajs = _load_hermes_trajectories(args.sel_hermes_jsonl, args.reward_weights)
+        sel_split = [t.task_id for t in sel_trajs]
+        print(f"  Extracted {len(sel_trajs)} sel rewards from Hermes trajectories")
 
     # Stage 3: holdout split
     holdout_split = []
@@ -148,8 +170,8 @@ def cmd_optimize(args: argparse.Namespace):
 
     # Determine rollout mode
     rollout_mode = getattr(args, "rollout_mode", "manual")
-    if rollout_mode == "hermes_auto":
-        harness = RolloutHarness(mode="hermes_auto")
+    if rollout_mode in {"hermes_auto", "hermes_static_score"}:
+        harness = RolloutHarness(mode="hermes_static_score")
         engine = SkillOptEngine(
             target_skill_path=args.skill,
             config=config,
@@ -273,6 +295,17 @@ def cmd_validate(args: argparse.Namespace):
     print(f"Score:     {engine.state.current_score:.4f}")
 
 
+def cmd_extract_rewards(args: argparse.Namespace):
+    """Convert Hermes Runtime trajectories into SkillOpt reward trajectories."""
+    config = RewardConfig(
+        weights=parse_weights(args.weights),
+        max_api_calls=args.max_api_calls,
+        max_tool_calls=args.max_tool_calls,
+    )
+    trajectories = convert_hermes_jsonl(args.input, args.output, config=config)
+    print(f"Converted {len(trajectories)} trajectories to {args.output}")
+
+
 def cmd_view(args: argparse.Namespace):
     """View optimisation state."""
     state = SkillOptEngine.load_state(args.work_dir)
@@ -333,6 +366,9 @@ def main():
     opt.add_argument("--sel", nargs="*", default=[], help="Selection task IDs")
     opt.add_argument("--train-trajs", help="Pre-collected train trajectories JSON")
     opt.add_argument("--sel-trajs", help="Pre-collected sel trajectories JSON")
+    opt.add_argument("--train-hermes-jsonl", nargs="*", help="Hermes Runtime train trajectory JSONL/JSON files")
+    opt.add_argument("--sel-hermes-jsonl", nargs="*", help="Hermes Runtime selection trajectory JSONL/JSON files")
+    opt.add_argument("--reward-weights", help="Comma-separated Hermes reward weights")
     opt.add_argument("--epochs", type=int, default=4, help="Number of epochs")
     opt.add_argument("--steps", type=int, default=4, help="Steps per epoch")
     opt.add_argument("--batch-size", type=int, default=8, help="Rollout batch size")
@@ -343,6 +379,12 @@ def main():
                      default="cosine", help="Edit budget schedule")
     opt.add_argument("--non-strict", action="store_true",
                      help="Non-strict validation (>= instead of >)")
+    opt.add_argument("--min-reward-delta", type=float, default=0.0,
+                     help="Minimum reward delta required by validation gate")
+    opt.add_argument("--completed-rate-tolerance", type=float, default=0.0,
+                     help="Allowed completed-rate regression in validation gate")
+    opt.add_argument("--tool-failure-rate-tolerance", type=float, default=0.05,
+                     help="Allowed tool failure-rate regression in validation gate")
     opt.add_argument("--hermes-default", action="store_true",
                      help="Use Hermes' current default model as optimizer (reads ~/.hermes/config.yaml)")
     opt.add_argument("--optimizer-model",
@@ -365,8 +407,8 @@ def main():
                      help="Holdout trajectories JSON (monitoring only)")
     opt.add_argument("--rollout-mode",
                      default="manual",
-                     choices=["manual", "script", "hermes_auto"],
-                     help="Rollout mode for trajectory collection")
+                     choices=["manual", "script", "hermes_auto", "hermes_static_score"],
+                     help="Rollout mode for trajectory collection (hermes_auto is a legacy alias for hermes_static_score)")
 
     # ── rollout ──
     rl = sub.add_parser("rollout", help="Single rollout batch")
@@ -393,6 +435,14 @@ def main():
     vl.add_argument("--mode", default="manual",
                     choices=["manual", "script"])
 
+    # ── extract-rewards ──
+    er = sub.add_parser("extract-rewards", help="Convert Hermes trajectories to SkillOpt reward trajectories")
+    er.add_argument("--input", nargs="+", required=True, help="Hermes JSONL/JSON trajectory files")
+    er.add_argument("--output", required=True, help="Output SkillOpt trajectory JSON")
+    er.add_argument("--weights", help="Comma-separated reward weights")
+    er.add_argument("--max-api-calls", type=int, default=8)
+    er.add_argument("--max-tool-calls", type=int, default=12)
+
     # ── view ──
     vw = sub.add_parser("view", help="View optimisation state")
     vw.add_argument("--work-dir", default="./skillopt_work")
@@ -411,6 +461,8 @@ def main():
         cmd_reflect(args)
     elif args.command == "validate":
         cmd_validate(args)
+    elif args.command == "extract-rewards":
+        cmd_extract_rewards(args)
     elif args.command == "view":
         cmd_view(args)
     elif args.command == "metrics":

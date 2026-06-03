@@ -69,6 +69,31 @@ class Trajectory:
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
+
+
+@dataclass
+class RewardResult:
+    """Auditable reward extracted from an execution trajectory.
+
+    ``Trajectory.score`` remains the scalar used by the engine, while these
+    fields keep the reward components and tool-policy diagnostics available
+    for reflection prompts and validation metrics.
+    """
+
+    score: float
+    components: dict[str, float] = field(default_factory=dict)
+    diagnostics: dict[str, Any] = field(default_factory=dict)
+    confidence: str = "high"
+
+    def to_dict(self) -> dict:
+        return {
+            "score": self.score,
+            "components": self.components,
+            "diagnostics": self.diagnostics,
+            "confidence": self.confidence,
+        }
+
+
 # ── 2. Edit operations ────────────────────────────────────────────────
 
 
@@ -225,6 +250,9 @@ class OptimizerConfig:
 
     # ── Validation ──
     accept_strict: bool = True  # Only accept if score strictly improves
+    min_reward_delta: float = 0.0
+    completed_rate_tolerance: float = 0.0
+    tool_failure_rate_tolerance: float = 0.05
 
     # ── Rejected buffer ──
     rejected_buffer_size: int = 20

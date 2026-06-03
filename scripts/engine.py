@@ -165,6 +165,7 @@ class SkillOptEngine:
 
         # Internal metrics
         self._metrics: list[dict] = []
+        self._last_sel_trajs: list[Trajectory] = []
 
     # ═════════════════════════════════════════════════════════════════
     #  Public API
@@ -188,6 +189,7 @@ class SkillOptEngine:
 
         # Stage 1: real baseline initialization
         baseline_trajs = self._rollout(resolved, self.splits["sel"])
+        self._last_sel_trajs = baseline_trajs
         if baseline_trajs:
             self.state.current_score = sum(t.score for t in baseline_trajs) / len(baseline_trajs)
             self.state.best_score = self.state.current_score
@@ -764,7 +766,19 @@ class SkillOptEngine:
         if not candidate_trajs:
             return False
 
-        candidate_score = sum(t.score for t in candidate_trajs) / len(candidate_trajs)
+        candidate_summary = self._summarize_reward_metrics(candidate_trajs)
+        current_trajs = self._last_sel_trajs
+        if not current_trajs:
+            current_trajs = self._rollout(self.state.current_skill_path, self.splits["sel"])
+            self._last_sel_trajs = current_trajs
+        current_summary = self._summarize_reward_metrics(current_trajs) if current_trajs else {
+            "mean_score": self.state.current_score,
+            "completed_rate": 0.0,
+            "tool_failure_rate": 1.0,
+            "tool_success_rate": 0.0,
+            "mean_api_calls": 0.0,
+        }
+        candidate_score = candidate_summary["mean_score"]
         current_score = self.state.current_score
 
         secondary_score: float | None = None
@@ -795,21 +809,108 @@ class SkillOptEngine:
             "candidate_score": candidate_score,
             "delta": candidate_score - current_score,
             "n_sel": len(candidate_trajs),
+            "current_reward_metrics": current_summary,
+            "candidate_reward_metrics": candidate_summary,
+            "completed_rate_delta": candidate_summary["completed_rate"] - current_summary["completed_rate"],
+            "tool_failure_rate_delta": candidate_summary["tool_failure_rate"] - current_summary["tool_failure_rate"],
+            "tool_success_rate_delta": candidate_summary["tool_success_rate"] - current_summary["tool_success_rate"],
+            "api_calls_delta": candidate_summary["mean_api_calls"] - current_summary["mean_api_calls"],
         }
         if secondary_score is not None:
             metric["secondary_score"] = secondary_score
         self._metrics.append(metric)
 
+        score_delta = candidate_score - current_score
         if self.config.accept_strict:
-            accepted = candidate_score > current_score
+            score_gate = score_delta > self.config.min_reward_delta
         else:
-            accepted = candidate_score >= current_score
+            score_gate = score_delta >= self.config.min_reward_delta
+
+        completed_gate = (
+            candidate_summary["completed_rate"] + self.config.completed_rate_tolerance
+            >= current_summary["completed_rate"]
+        )
+        failure_gate = (
+            candidate_summary["tool_failure_rate"]
+            <= current_summary["tool_failure_rate"] + self.config.tool_failure_rate_tolerance
+        )
+        accepted = score_gate and completed_gate and failure_gate
+
+        if not score_gate:
+            print("      [GATE] Reward did not improve enough.")
+        if not completed_gate:
+            print("      [GATE] Completed rate regressed.")
+        if not failure_gate:
+            print("      [GATE] Tool failure rate regressed.")
 
         if accepted:
             self.state.current_score = candidate_score
             self.state.current_skill_path = candidate_path
+            self._last_sel_trajs = candidate_trajs
 
         return accepted
+
+    @staticmethod
+    def _summarize_reward_metrics(trajectories: list[Trajectory]) -> dict:
+        """Aggregate trajectory reward metadata for multidimensional gating."""
+        if not trajectories:
+            return {
+                "mean_score": 0.0,
+                "completed_rate": 0.0,
+                "tool_failure_rate": 0.0,
+                "tool_success_rate": 0.0,
+                "mean_api_calls": 0.0,
+            }
+
+        mean_score = sum(t.score for t in trajectories) / len(trajectories)
+        completed_values: list[float] = []
+        total_tool_calls = 0
+        total_tool_success = 0
+        total_tool_failure = 0
+        api_calls: list[float] = []
+
+        for traj in trajectories:
+            metadata = traj.metadata if isinstance(traj.metadata, dict) else {}
+            components = metadata.get("reward_components") if isinstance(metadata.get("reward_components"), dict) else {}
+            hermes = metadata.get("hermes") if isinstance(metadata.get("hermes"), dict) else {}
+
+            if "completed" in components:
+                completed_values.append(float(components.get("completed", 0.0)))
+            elif "completed" in hermes:
+                completed_values.append(1.0 if hermes.get("completed") else 0.0)
+            else:
+                completed_values.append(1.0 if traj.is_success else 0.0)
+
+            if hermes.get("api_calls") is not None:
+                try:
+                    api_calls.append(float(hermes.get("api_calls")))
+                except (TypeError, ValueError):
+                    pass
+
+            tool_stats = hermes.get("tool_stats") if isinstance(hermes.get("tool_stats"), dict) else {}
+            for stats in tool_stats.values():
+                if not isinstance(stats, dict):
+                    continue
+                count = int(stats.get("count") or 0)
+                success = int(stats.get("success") or 0)
+                failure = int(stats.get("failure") or 0)
+                if count <= 0:
+                    count = success + failure
+                total_tool_calls += max(count, 0)
+                total_tool_success += max(success, 0)
+                total_tool_failure += max(failure, 0)
+
+        tool_failure_rate = (total_tool_failure / total_tool_calls) if total_tool_calls else 0.0
+        tool_success_rate = (total_tool_success / total_tool_calls) if total_tool_calls else 1.0
+        mean_api_calls = (sum(api_calls) / len(api_calls)) if api_calls else 0.0
+
+        return {
+            "mean_score": round(mean_score, 4),
+            "completed_rate": round(sum(completed_values) / len(completed_values), 4),
+            "tool_failure_rate": round(tool_failure_rate, 4),
+            "tool_success_rate": round(tool_success_rate, 4),
+            "mean_api_calls": round(mean_api_calls, 4),
+        }
 
     # ═════════════════════════════════════════════════════════════════
     #  Drift detection

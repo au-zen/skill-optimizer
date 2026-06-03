@@ -8,8 +8,9 @@ manual      : Load pre-collected trajectories from a JSON file.
               Useful when running SkillOpt on existing data.
 script      : Run a shell command or Python script per task.
               The harness captures stdout / exit code and scores it.
-hermes_auto : (placeholder) For future Hermes-agent integration via
-              delegate_task or cronjob subagents.
+hermes_static_score : Legacy/static candidate scoring via score_skill.py.
+              This is a guardrail mode, not Hermes Runtime reward extraction.
+hermes_auto : Backward-compatible alias for hermes_static_score.
 """
 
 from __future__ import annotations
@@ -130,8 +131,8 @@ class RolloutHarness:
             return self._run_manual(task)
         elif self.mode == "script":
             return self._run_script(skill_path, task)
-        elif self.mode == "hermes_auto":
-            return self._run_hermes_subagent(skill_path, task)
+        elif self.mode in {"hermes_auto", "hermes_static_score"}:
+            return self._run_hermes_static_score(skill_path, task)
         else:
             raise ValueError(f"Unknown rollout mode: {self.mode}")
 
@@ -190,12 +191,13 @@ class RolloutHarness:
                 metadata={"skill_path": skill_path},
             )
 
-    def _run_hermes_subagent(self, skill_path: str, task: str) -> Trajectory:
-        """Hermes subagent mode — evaluate skill by running score_skill.py.
+    def _run_hermes_static_score(self, skill_path: str, task: str) -> Trajectory:
+        """Legacy Hermes static-score mode — evaluate with score_skill.py.
 
-        This is a lightweight functional evaluation that scores the candidate
-        skill document's structural quality. For true agent-based evaluation,
-        replace with a Hermes delegate_task call.
+        This mode is intentionally labelled as static scoring because it does
+        not consume Hermes Runtime trajectory signals. Use the CLI
+        ``extract-rewards`` command or ``--train-hermes-jsonl`` /
+        ``--sel-hermes-jsonl`` to score official Hermes trajectories.
         """
         try:
             from .score_skill import score_skill as _score_fn
@@ -210,7 +212,7 @@ class RolloutHarness:
                 error=None,
                 metadata={
                     "skill_path": skill_path,
-                    "mode": "hermes_auto",
+                    "mode": "hermes_static_score",
                     "n_checks": result.get("n_checks", 0),
                     "n_issues": result.get("n_issues", 0),
                 },
@@ -233,7 +235,7 @@ class RolloutHarness:
                     output=r.stdout,
                     score=score,
                     error=r.stderr if r.returncode != 0 else None,
-                    metadata={"skill_path": skill_path, "mode": "hermes_auto"},
+                    metadata={"skill_path": skill_path, "mode": "hermes_static_score"},
                 )
             except Exception as e:
                 return Trajectory(
@@ -242,7 +244,7 @@ class RolloutHarness:
                     output="",
                     score=0.0,
                     error=str(e),
-                    metadata={"skill_path": skill_path, "mode": "hermes_auto_fallback"},
+                    metadata={"skill_path": skill_path, "mode": "hermes_static_score_fallback"},
                 )
 
     # ── I/O helpers ────────────────────────────────────────────────

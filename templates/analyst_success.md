@@ -9,6 +9,19 @@ For each success trajectory:
 
 Only propose edits that **protect against future regression**. If a pattern already works, don't add redundant rules — only add reinforcement if you anticipate a future change could break it.
 
+
+## Hermes trajectory reward signals
+
+When trajectory metadata contains Hermes Runtime reward fields, use them to identify behaviours worth preserving:
+
+- High `metadata.reward_components.completed` confirms completion behaviour to preserve.
+- High `metadata.reward_components.tool_success_rate` plus `metadata.hermes.tool_stats` identifies reliable tool choices.
+- High `metadata.reward_components.tool_efficiency` and low `metadata.hermes.api_calls` identify efficient ordering/early-stop patterns.
+- Low or empty `metadata.hermes.tool_error_counts` identifies robust error avoidance.
+
+Prefer preservation edits that encode successful tool-selection policy: which toolset was chosen, in what order, what preconditions were checked, and when the agent avoided unnecessary or high-risk tool calls.
+
+
 Output format — return a JSON object:
 ```json
 {
